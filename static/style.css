@@ -1,0 +1,119 @@
+:root {
+    --colour-primary: rgb(173, 185, 202);
+    --colour-secondary: rgb(132, 151, 176);
+    --colour-mid: rgb(153, 168, 189);
+}
+
+.watermark {
+    position: absolute;
+    z-index: 0;
+    background: white;
+    display: block;
+    min-height: 50%;
+    min-width: 50%;
+    width: 100%;
+}
+
+.bg-primary {
+    background-color: var(--colour-primary)
+}
+
+.bg-secondary {
+    background-color: var(--colour-secondary)
+}
+
+.bg-mid {
+    background-color: var(--colour-mid)
+}
+
+.watermark img {
+    opacity: 0.5;
+    width: 50%;
+    display: block;
+    margin: auto;
+}
+
+.content {
+    position: absolute;
+    z-index: 1;
+}
+
+.center-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type=text], input[type=password], input[type=datetime-local], input[type=number] {
+    width: 100%;
+    padding: 5px 10px;
+    margin: 15px 0;
+    box-sizing: border-box;
+    border: black solid 1pt;
+    color: black;
+    background: 0;
+
+    font-family: "Times New Roman", serif;
+    font-size: 20pt;
+}
+
+::placeholder {
+    color: black;
+}
+
+input[type=submit], .btn {
+    width: 100%;
+    padding: 6px 15px;
+    background: #fff;
+    border: black solid 1pt;
+    cursor: pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: black;
+
+    font-family: "Times New Roman", serif;
+    font-size: 20pt;
+}
+
+input[type=submit]:hover, .btn:hover {
+    background: #BfBfBf;
+}
+
+.sidebar-li {
+    font-family: "Arial", serif;
+    font-size: 24px;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.sidebar-li:hover {
+    background-color: var(--colour-mid);
+}
+.sidebar-li[selected] {
+    background-color: var(--colour-secondary);
+}
+.sidebar-li > a {
+    text-decoration: none;
+    display: block;
+    height: max-content;
+    width: 100%;
+    color: black;
+}
+
+p {
+    font-size: 20px;
+}
+
+.form-li {
+    font-family: "Arial", serif;
+    font-size: 24px;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.pad-cells > td {
+    padding-top: 20px;
+}
