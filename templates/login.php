@@ -6,15 +6,15 @@ if (isset($_POST['username'], $_POST['password'])) {
     $conn = getConnection();
 
     $username = $_POST["username"];
-    $password = $_POST["password"];
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username=:username AND password=:password;");
-    $stmt->execute(['username' => $username, 'password' => $password]);
+
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username=:username");
+    $stmt->execute(['username' => $username]);
     $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
     $res = $stmt->fetchAll();
     // If there is 1 user in the list, then we can authenticate
-
-    if (count($res) == 1) {
+    $password = $_POST["password"];
+    if (count($res) == 1 && password_verify($password , $res[0]["password"])) {
         // Set the session value
         $_SESSION["user_pk"] = $res[0]["pk"];
         header("Location: /");
@@ -39,7 +39,8 @@ if (isset($_POST['username'], $_POST['password'])) {
                     <td style="padding-right: 0"><button class="btn" type="button">Cancel</button></td>
                 </tr>
             </table>
-            <button class="btn" style="margin-top: 10px">Register</button>
+            <input class="btn" type="button" style="margin-top: 10px" onclick="window.location.href='/register'"
+            value="Register">
         </form>
     </div>
 </div>

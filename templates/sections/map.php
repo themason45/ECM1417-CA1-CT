@@ -3,7 +3,9 @@
 
 <input id="x_input" type="hidden" name="x" value="0">
 <input id="y_input" type="hidden" name="y" value="0">
-<div style=" float: right; padding-right: 0; position: relative; width: 85%">
+<input id="map_width" type="hidden" name="map_width" value="0">
+<input id="map_height" type="hidden" name="map_height" value="0">
+<div style=" float: right; padding-right: 0; position: relative; width: 85%" id="mapWrapper">
     <img src="/static/img/exeter.jpg" id="map" style="float: right; width: 100%; z-index: 0; display: block;">
     <div id="pointer-wrapper" style="z-index: 1; position: absolute;" hidden>
         <img src="/static/img/marker_black.png" style="width: 30px;">
@@ -11,17 +13,40 @@
 </div>
 
 <script>
+    let clickingEnabled;
     $(document).ready(function () {
         $("#map").click(function (ev) {
-            let offset = $(this).offset()
-            let x = ev.clientX - offset.left;
-            let y = ev.clientY - offset.top;
-            $("#x_input").val(x); $("#y_input").val(y);
+            if (clickingEnabled) {
 
-            let wrapper = $("#pointer-wrapper")
-            wrapper.css("left", `${Math.round(x - 15)}px`);
-            wrapper.css("top", `${Math.round(y - 30)}px`);
-            wrapper.show();
+                let offset = $(this).offset()
+                let x = ev.clientX - offset.left;
+                let y = ev.clientY - offset.top;
+                $("#x_input").val(x);
+                $("#y_input").val(y);
+
+                let map = $("#map")
+                $("#map_width").val(map.width());
+                $("#map_height").val(map.height());
+
+                // TODO: Make the point position responsive to changes in screen size
+                let wrapper = $("#pointer-wrapper")
+                // The -15, and -30, is to account for the size of the marker itself
+                wrapper.css("left", `${Math.round(x - 15)}px`);
+                wrapper.css("top", `${Math.round(y - 30)}px`);
+                wrapper.show();
+            }
         });
-    })
+    });
+
+    function addMarker(x_ratio, y_ratio) {
+        let wrapper = $("#pointer-wrapper").clone();
+        wrapper.appendTo("#mapWrapper");
+
+        let map = $("#map")
+        let x = x_ratio * map.width(); let y = y_ratio * map.height();
+
+        wrapper.css("left", `${Math.round(x - 15)}px`);
+        wrapper.css("top", `${Math.round(y - 30)}px`);
+        wrapper.show();
+    }
 </script>

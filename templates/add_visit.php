@@ -7,8 +7,12 @@ if (isset($_POST['datetime'], $_POST['duration'], $_POST["x"], $_POST["y"])) {
     $location->x = $_POST["x"];
     $location->y = $_POST["y"];
 
+    $location->x_ratio = $_POST["x"] / $_POST["map_width"];
+    $location->y_ratio = $_POST["y"] / $_POST["map_height"];
+
     $location->user = User::getUserById($_SESSION["user_pk"]);
-    $location->timeVisited = $_POST["datetime"];
+    echo $_POST["datetime"];
+    $location->timeVisited = date_create_from_format("Y-m-d?H:i", $_POST["datetime"]);
     $location->duration = $_POST["duration"];
 
     $location->save();
@@ -56,6 +60,7 @@ if (isset($_POST['datetime'], $_POST['duration'], $_POST["x"], $_POST["y"])) {
 </div>
 <script>
     $(document).ready(function () {
+        clickingEnabled = true;
         $("#datetime-field").attr("value", moment().format("YYYY-MM-DD\Thh:mm"));
     });
 </script>

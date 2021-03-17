@@ -19,8 +19,8 @@ class User
         $this->password = $password;
     }
 
-
-    static function getUserById($id) {
+    static function getUserById($id)
+    {
         $conn = getConnection();
         $stmt = $conn->prepare("SELECT * FROM users WHERE pk=:pk;");
         $stmt->execute(["pk" => $id]);
@@ -35,12 +35,30 @@ class User
         return null;
     }
 
-    function save() {
-        # Check if the user exists, if so, update, if not, create a new one
-        return null;
+    function save()
+    {
+        $conn = getConnection();
+        $matching_username = $conn->prepare("SELECT username FROM users WHERE username=:username");
+        $matching_username->execute(
+            ["username" => $this->username]
+        );
+        if ($matching_username->rowCount() == 0) {
+            $stmt = $conn->prepare("INSERT INTO users (username, password, firstName, lastName)
+VALUES (:username, :password, :firstName, :lastName);");
+
+            $stmt->execute(["username" => $this->username, "password" => $this->password,
+                "firstName" => $this->firstName, "lastName" => $this->lastName]);
+
+            $this->pk = $conn->lastInsertId();
+            # Check if the user exists, if so, update, if not, create a new one
+            return null;
+        } else {
+            echo "Username already exists";
+        }
     }
 
-    function update() {
+    function update()
+    {
 
     }
 

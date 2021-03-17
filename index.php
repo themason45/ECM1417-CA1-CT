@@ -23,6 +23,7 @@ if (!(isset($_SESSION["user_pk"]))) {
         Header("Location: /login");
     }
 }
+
 $not_login = true;
 switch ($request) {
     case '/login' :

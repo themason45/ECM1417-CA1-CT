@@ -1,6 +1,8 @@
 <?php
 include_once "support/User.php";
+include_once "support/Location.php";
 $user = \User::getUserById($_SESSION["user_pk"]);
+$locations = Location::queryForUserId($user->pk)
 ?>
 <div style="margin-top: 20px">
     <div class="watermark">
@@ -16,7 +18,8 @@ $user = \User::getUserById($_SESSION["user_pk"]);
             <tr>
                 <td style="vertical-align: top; padding-top: 10px; display: flex">
                     <p>Hi <?php echo $user->username ?>, you may have had a connection with an infected person.</p>
-                    <p style="bottom: 0; position: absolute; width: 30%">Click on the marker to see details about an infection.</p>
+                    <p style="bottom: 0; position: absolute; width: 30%">Click on the marker to see details about an
+                        infection.</p>
                 </td>
                 <td colspan="2" style="padding-top: 10px">
                     <div style="width: 100%;max-height: 500px; overflow: hidden;"> <?php include_once 'templates/sections/map.php' ?></div>
@@ -24,4 +27,12 @@ $user = \User::getUserById($_SESSION["user_pk"]);
             </tr>
         </table>
     </div>
+    <script>
+        $(document).ready(function () {
+            clickingEnabled = false;
+            <?php foreach ($locations as $loc): ?>
+            addMarker(<?php echo $loc->x_ratio ?>, <?php echo $loc->y_ratio ?>)
+            <?php endforeach; ?>
+        });
+    </script>
 </div>

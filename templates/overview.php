@@ -26,8 +26,8 @@ font-family: Arial,serif; font-size: 20px" >
                     <td style="text-align: center"><?php echo date_format($loc->timeVisited, "d/m/Y") ?></td>
                     <td><?php echo date_format($loc->timeVisited, "h:m") ?></td>
                     <td><?php echo $loc->duration ?></td>
-                    <td><?php echo $loc->x ?></td>
-                    <td><?php echo $loc->y ?></td>
+                    <td><?php echo round($loc->x_ratio * 100) ?></td>
+                    <td><?php echo round($loc->y_ratio * 100) ?></td>
                     <td style="text-align: left" onclick="removeLocation(<?php echo $loc->pk ?>)">
                         <img src="/static/img/cross.png" width="25px"></td>
                 </tr>
