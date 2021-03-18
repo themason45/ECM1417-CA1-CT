@@ -62,7 +62,7 @@
                                     <td colspan="1"></td>
                                     <td colspan="1" style="text-align: end;">
                                         <input type="button" class="btn" value="Cancel"
-                                               onclick="window.location.href = '/'" style="width: 50%"></td>
+                                               onclick="goHome()" style="width: 50%"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -78,6 +78,7 @@
     </div>
 </div>
 <script>
+    function goHome() {window.location.href = '/'}
     $(document).ready(function () {
         let option = parseInt(<?php echo $user->weekWindow ?>);
         $(`#window_input > option[value=${option}]`).prop("selected", true)

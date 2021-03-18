@@ -76,7 +76,7 @@ switch ($request) {
                             require __DIR__ . '/templates/logout.php';
                             break;
                         case '/logout_confirm':
-                            $_SESSION["user_pk"] = null;
+                            $_SESSION = [];
                             Header("Location: /");
                             break;
                         default:
