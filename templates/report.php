@@ -1,4 +1,12 @@
 <?php
+include_once "support/User.php";
+include_once "support/Infection.php";
+
+$user = User::getUserById($_SESSION["user_pk"]);
+if (isset($_POST["datetime"])) {
+    $infection = new Infection($user, date_create_from_format("Y-m-d?H:i",$_POST["datetime"]));
+    $infection->save();
+}
 
 ?>
 <div style="margin-top: 20px">
@@ -33,7 +41,7 @@
                                         <div style="width: 50%; display: block; margin: 0 auto">
                                             <!--suppress HtmlFormInputWithoutLabel -->
                                             <input type="datetime-local" class="" name="datetime"
-                                                   placeholder="Date & Time">
+                                                   placeholder="Date & Time" id="datetime-field">
                                         </div>
                                     </td>
                                 </tr>
@@ -58,3 +66,8 @@
         </table>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $("#datetime-field").attr("value", moment().format("YYYY-MM-DD\Thh:mm"));
+    });
+</script>

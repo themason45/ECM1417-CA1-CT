@@ -1,6 +1,5 @@
 <?php
 
-
 class Location
 {
     public int $pk = 0;
@@ -18,7 +17,7 @@ class Location
         /** @noinspection SqlResolve */
         $stmt = $conn->prepare("INSERT INTO location (pk, x, y, duration, userPk, timeVisited, x_ratio, y_ratio) 
 VALUES (:pk, :x, :y, :duration, :userPk, :timeVisited, :x_ratio, :y_ratio)");
-        $stmt->execute(["pk" => $this->pk, "x" => $this->x, "y" => $this->y,"duration" => $this->duration,
+        $stmt->execute(["pk" => $this->pk, "x" => $this->x, "y" => $this->y, "duration" => $this->duration,
             "userPk" => $this->user->pk, "timeVisited" => date_format($this->timeVisited, "Y-m-d?H:i:s"), "x_ratio" => $this->x_ratio,
             "y_ratio" => $this->y_ratio]);
 
@@ -74,28 +73,54 @@ VALUES (:pk, :x, :y, :duration, :userPk, :timeVisited, :x_ratio, :y_ratio)");
         $stmt = $conn->prepare("SELECT * FROM location WHERE userPk=:upk");
         $stmt->execute(["upk" => $id]);
 
-        $outArray = array();
+        $outArray = [];
         foreach ($stmt->fetchAll() as $item) {
-            $location = new Location();
-            $location->pk = $item["pk"];
-            $location->x = $item["x"];
-            $location->y = $item["y"];
-
-            $location->x_ratio = $item["x_ratio"];
-            $location->y_ratio = $item["y_ratio"];
-
-            include_once "support/User.php";
-            $user = User::getUserById($item["userPk"]);
-            $location->user = $user;
-
-            $location->timeVisited = date_create_from_format("Y-m-d?H:i:s", $item["timeVisited"]);
-            $location->duration = $item["duration"];
-
-            array_push($outArray, $location);
+            array_push($outArray, Location::generateForQueryRes($item));
         }
         $conn = null;
 
         return $outArray;
     }
 
+    private static function generateForQueryRes($item)
+    {
+        $location = new Location();
+        $location->pk = $item["pk"];
+        $location->x = $item["x"];
+        $location->y = $item["y"];
+
+        $location->x_ratio = $item["x_ratio"];
+        $location->y_ratio = $item["y_ratio"];
+
+        include_once "support/User.php";
+        $user = User::getUserById($item["userPk"]);
+        $location->user = $user;
+
+        $location->timeVisited = date_create_from_format("Y-m-d?H:i:s", $item["timeVisited"]);
+        $location->duration = $item["duration"];
+
+        return $location;
+    }
+
+    static function findLocationsInRange($user, $start, $end): array
+    {
+        $conn = getConnection();
+
+        /** @noinspection SqlResolve */
+        $stmt = $conn->prepare("SELECT * FROM location WHERE userPk =:user_pk AND timeVisited BETWEEN :dts AND :dte;");
+        $stmt->execute(["user_pk" => $user->pk, "dts" => date_format($start, "Y-m-d?H:i:s"),
+            "dte" => date_format($end, "Y-m-d?H:i:s")]);
+
+        $output = [];
+        foreach ($stmt->fetchAll() as $item) {
+            array_push($output, Location::generateForQueryRes($item));
+        }
+        $conn = null;
+
+        return $output;
+    }
+
+    static function diff($obj_a, $obj_b) {
+        return $obj_a->pk - $obj_b->pk;
+    }
 }

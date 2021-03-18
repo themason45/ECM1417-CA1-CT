@@ -29,7 +29,7 @@ font-family: Arial,serif; font-size: 20px" >
                     <td><?php echo round($loc->x_ratio * 100) ?></td>
                     <td><?php echo round($loc->y_ratio * 100) ?></td>
                     <td style="text-align: left" onclick="removeLocation(<?php echo $loc->pk ?>)">
-                        <img src="/static/img/cross.png" width="25px"></td>
+                        <img src="/static/img/cross.png" width="25px" alt="X"></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
@@ -41,7 +41,7 @@ font-family: Arial,serif; font-size: 20px" >
         $.ajax(
             `/api/location/${pk}/delete`,
             {
-                success: function (data, textStatus, xhr) {
+                success: function () {
                     location.reload();
                 }
             }

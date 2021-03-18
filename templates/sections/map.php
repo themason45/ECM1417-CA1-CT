@@ -38,9 +38,11 @@
         });
     });
 
-    function addMarker(x_ratio, y_ratio) {
+    function addMarker(x_ratio, y_ratio, red=false) {
         let wrapper = $("#pointer-wrapper").clone();
         wrapper.appendTo("#mapWrapper");
+
+        if (red) {wrapper.find("img").attr('src',"/static/img/marker_red.png");}
 
         let map = $("#map")
         let x = x_ratio * map.width(); let y = y_ratio * map.height();
