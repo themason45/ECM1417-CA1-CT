@@ -8,8 +8,7 @@ class User
     public string $firstName = '';
     public string $lastName = '';
     public string $username = '';
-    # TODO: Make password a private attribute
-    protected string $password = '';
+    private string $password = '';
 
     public int $weekWindow = 0;
     public float $distanceOption = 0.0;
@@ -88,5 +87,9 @@ VALUES (:username, :password, :firstName, :lastName, :distance, :window);");
             print $e;
             return false;
         }
+    }
+
+    function checkPassword($pwd) {
+        return password_verify($pwd , $this->password);
     }
 }

@@ -7,14 +7,17 @@ if (isset($_POST['username'], $_POST['password'])) {
 
     $username = $_POST["username"];
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username=:username");
+    $stmt = $conn->prepare("SELECT `username`, `pk` FROM users WHERE username=:username");
     $stmt->execute(['username' => $username]);
     $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
     $res = $stmt->fetchAll();
     // If there is 1 user in the list, then we can authenticate
     $password = $_POST["password"];
-    if (count($res) == 1 && password_verify($password , $res[0]["password"])) {
+    print_r($res[0]);
+    $user = User::getUserById($res[0]["pk"]);
+
+    if (count($res) == 1 && $user->checkPassword($password)) {
         // Set the session value
         $_SESSION["user_pk"] = $res[0]["pk"];
         header("Location: /");
