@@ -7,11 +7,13 @@
 <input id="map_height" type="hidden" name="map_height" value="0" required>
 <div style=" float: right; padding-right: 0; position: relative; width: 85%" id="mapWrapper">
     <img src="/static/img/exeter.jpg" id="map" style="float: right; width: 100%; z-index: 0; display: block;">
-    <div id="pointer-wrapper" style="z-index: 1; position: absolute;" hidden>
+    <div id="pointer-wrapper" style="z-index: 1; position: absolute;" data-tooltip="" onclick="markerPress(this)" hidden>
         <img src="/static/img/marker_black.png" style="width: 30px;">
     </div>
 </div>
 
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
 <script>
     let clickingEnabled;
     $(document).ready(function () {
@@ -35,13 +37,16 @@
                 wrapper.css("left", `${Math.round(x - 15)}px`);
                 wrapper.css("top", `${Math.round(y - 30)}px`);
                 wrapper.show();
+            } else {
+                $("#marker-info").text("Click on the marker to see details about an infection.");
             }
         });
     });
 
-    function addMarker(x_ratio, y_ratio, red=false) {
+    function addMarker(x_ratio, y_ratio, text="", red=false) {
         let wrapper = $("#pointer-wrapper").clone();
         wrapper.appendTo("#mapWrapper");
+        wrapper.data("tooltip", text);
 
         if (red) {wrapper.find("img").attr('src',"/static/img/marker_red.png");}
 
@@ -51,5 +56,11 @@
         wrapper.css("left", `${Math.round(x - 15)}px`);
         wrapper.css("top", `${Math.round(y - 30)}px`);
         wrapper.show();
+    }
+
+    function markerPress(pointerObj) {
+        let pointer = $(pointerObj);
+        let text = pointer.data("tooltip");
+        $("#marker-info").text(text);
     }
 </script>

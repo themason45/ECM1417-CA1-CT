@@ -39,7 +39,7 @@ $contact_locations = array_uintersect($my_locations, $infected_locations,
             <tr>
                 <td style="vertical-align: top; padding-top: 10px; display: flex">
                     <p>Hi <?php echo $user->username ?>, you may have had a connection with an infected person.</p>
-                    <p style="bottom: 0; position: absolute; width: 30%">Click on the marker to see details about an
+                    <p style="bottom: 0; position: absolute; width: 30%" id="marker-info">Click on the marker to see details about an
                         infection.</p>
                 </td>
                 <td colspan="2" style="padding-top: 10px">
@@ -51,15 +51,16 @@ $contact_locations = array_uintersect($my_locations, $infected_locations,
     <script>
         $(document).ready(function () {
             clickingEnabled = false;
-
             // Normal locations
             <?php foreach ($infected_locations as $loc): ?>
-            addMarker(<?php echo $loc->x_ratio ?>, <?php echo $loc->y_ratio ?>)
+            addMarker(<?php echo $loc->x_ratio ?>, <?php echo $loc->y_ratio ?>, "<?php echo "Visited at: ".
+            date_format($loc->timeVisited, "Y-m-d H:i:s")?>")
             <?php endforeach; ?>
 
             // Infected locations
             <?php foreach ($contact_locations as $loc): ?>
-            addMarker(<?php echo $loc->x_ratio ?>, <?php echo $loc->y_ratio ?>, true)
+            addMarker(<?php echo $loc->x_ratio ?>, <?php echo $loc->y_ratio ?>, "<?php echo "Visited at: ".
+                date_format($loc->timeVisited, "Y-m-d H:i:s")?>", true)
             <?php endforeach; ?>
         });
     </script>
