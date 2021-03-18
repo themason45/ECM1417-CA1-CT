@@ -1,11 +1,33 @@
 <?php
 include_once "support/User.php";
 include_once "support/Infection.php";
+include_once "support/Location.php";
+$config = include_once "config.php";
 
 $user = User::getUserById($_SESSION["user_pk"]);
 if (isset($_POST["datetime"])) {
-    $infection = new Infection($user, date_create_from_format("Y-m-d?H:i",$_POST["datetime"]));
+    $infection = new Infection($user, date_create_from_format("Y-m-d?H:i", $_POST["datetime"]));
     $infection->save();
+
+    $backdate = new DateTime();
+    $backdate->modify("-4 week");
+    $infection->locations = Location::findUserLocationsInTimeRange($user, $backdate, new DateTime());
+
+    $locations = ((array)$infection)["locations"];
+    $base_url = $config["API_URL"];
+    $report_url = "$base_url/report/";
+
+    foreach ($locations as $location) {
+        $ch = curl_init($report_url);
+        curl_setopt_array($ch,
+            [CURLOPT_POST => 1,
+                CURLOPT_POSTFIELDS => $location->json(),
+                CURLOPT_HTTPHEADER => ["Content-Type:application/json"]]);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+    }
+
 }
 
 ?>

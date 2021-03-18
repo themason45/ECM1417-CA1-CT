@@ -3,20 +3,25 @@ if (isset($_POST['datetime'], $_POST['duration'], $_POST["x"], $_POST["y"])) {
     include_once "support/Location.php";
     include_once "support/User.php";
 
-    $location = new Location();
-    $location->x = $_POST["x"];
-    $location->y = $_POST["y"];
+    if ($_POST["x"] == -1 && $_POST["y"] == -1) {
+        echo "Please select a location.";
+    } elseif ($_POST["duration"] == 0) {echo "Please choose a duration above 0.";} else {
 
-    $location->x_ratio = $_POST["x"] / $_POST["map_width"];
-    $location->y_ratio = $_POST["y"] / $_POST["map_height"];
+        $location = new Location();
+        $location->x = $_POST["x"];
+        $location->y = $_POST["y"];
 
-    $location->user = User::getUserById($_SESSION["user_pk"]);
-    echo $_POST["datetime"];
-    $location->timeVisited = date_create_from_format("Y-m-d?H:i", $_POST["datetime"]);
-    $location->duration = $_POST["duration"];
+        $location->x_ratio = $_POST["x"] / $_POST["map_width"];
+        $location->y_ratio = $_POST["y"] / $_POST["map_height"];
 
-    $location->save();
-    Header("Location: /overview");
+        $location->user = User::getUserById($_SESSION["user_pk"]);
+        echo $_POST["datetime"];
+        $location->timeVisited = date_create_from_format("Y-m-d?H:i", $_POST["datetime"]);
+        $location->duration = $_POST["duration"];
+
+        $location->save();
+        Header("Location: /overview");
+    }
 }
 ?>
 <div style="margin-top: 20px">
@@ -43,7 +48,8 @@ if (isset($_POST['datetime'], $_POST['duration'], $_POST["x"], $_POST["y"])) {
                             <li class="form-li">
                                 <label for="duration-field">Duration (mins)</label><input id="duration-field"
                                                                                           name="duration"
-                                                                                          type="number" value="0"></li>
+                                                                                          type="number" value="1"
+                                min="1"></li>
                         </ul>
                         <div style="width: 30%; padding: 0; margin-bottom: 20px; position: absolute; bottom: 0">
                             <input type="submit" value="Save" style="margin-bottom: 20px"/>

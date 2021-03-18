@@ -5,7 +5,7 @@ session_start();
     <title>Contact tracer</title>
     <link href="/static/style.css" type="text/css" rel="stylesheet">
 </head>
-<body style="margin: 0; overflow: hidden">
+<body style="margin: 0; #overflow: hidden">
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://momentjs.com/downloads/moment.min.js"></script>
 <div style="margin-bottom: 1vh">

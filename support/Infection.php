@@ -21,25 +21,34 @@ class Infection
         $conn = null;
     }
 
-    public static function queryForUser($id, $start, $end): array
+    public static function findInTimeRange($start, $end): array
     {
         $conn = getConnection();
-        $user = User::getUserById($id);
 
         /** @noinspection SqlResolve */
-        $stmt = $conn->prepare("SELECT * FROM infection WHERE user_pk =:user_pk AND `infection_dt` BETWEEN :dts AND :dte");
-        $stmt->execute(["user_pk" => $id, "dts" => date_format($start, "Y-m-d?H:i:s"),
+        $stmt = $conn->prepare("SELECT * FROM infection WHERE `infection_dt` BETWEEN :dts AND :dte");
+        $stmt->execute(["dts" => date_format($start, "Y-m-d?H:i:s"),
             "dte" => date_format($end, "Y-m-d?H:i:s")]);
 
         $res = $stmt->fetchAll();
         $output = [];
         foreach ($res as $data) {
+            $user = User::getUserById($data["user_pk"]);
             $infection = new Infection($user, date_create_from_format("Y-m-d?H:i:s", $data["infection_dt"]));
-            $infection->locations = Location::findLocationsInRange($user, $start, $end);
+            $infection->locations = Location::findUserLocationsInTimeRange($user, $start, $end);
             array_push($output, $infection);
         }
         $conn = null;
 
         return $output;
+    }
+
+    static function mapLocs($obj) {
+        return $obj->locations;
+    }
+
+    public function serialise(): bool|string
+    {
+        return json_encode($this);
     }
 }

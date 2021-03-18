@@ -8,6 +8,7 @@ class User
     public string $firstName = '';
     public string $lastName = '';
     public string $username = '';
+    # TODO: Make password a private attribute
     protected string $password = '';
 
     public int $weekWindow = 0;

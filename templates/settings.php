@@ -6,6 +6,7 @@
         $user->weekWindow = $_POST["window"];
 
         $user->update();
+        Header("Location: /");
     }
 ?>
 <div style="margin-top: 20px">

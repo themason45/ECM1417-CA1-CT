@@ -1,5 +1,7 @@
 <?php
 
+use JetBrains\PhpStorm\Pure;
+
 class Location
 {
     public int $pk = 0;
@@ -82,7 +84,7 @@ VALUES (:pk, :x, :y, :duration, :userPk, :timeVisited, :x_ratio, :y_ratio)");
         return $outArray;
     }
 
-    private static function generateForQueryRes($item)
+    private static function generateForQueryRes($item): Location
     {
         $location = new Location();
         $location->pk = $item["pk"];
@@ -102,13 +104,13 @@ VALUES (:pk, :x, :y, :duration, :userPk, :timeVisited, :x_ratio, :y_ratio)");
         return $location;
     }
 
-    static function findLocationsInRange($user, $start, $end): array
+    static function findUserLocationsInTimeRange($user, $start, $end): array
     {
         $conn = getConnection();
 
         /** @noinspection SqlResolve */
-        $stmt = $conn->prepare("SELECT * FROM location WHERE userPk =:user_pk AND timeVisited BETWEEN :dts AND :dte;");
-        $stmt->execute(["user_pk" => $user->pk, "dts" => date_format($start, "Y-m-d?H:i:s"),
+        $stmt = $conn->prepare("SELECT * FROM location WHERE userPk = :userPk AND timeVisited BETWEEN :dts AND :dte;");
+        $stmt->execute(["userPk" => $user->pk, "dts" => date_format($start, "Y-m-d?H:i:s"),
             "dte" => date_format($end, "Y-m-d?H:i:s")]);
 
         $output = [];
@@ -120,7 +122,36 @@ VALUES (:pk, :x, :y, :duration, :userPk, :timeVisited, :x_ratio, :y_ratio)");
         return $output;
     }
 
-    static function diff($obj_a, $obj_b) {
+    /** @noinspection PhpUnused */
+    static function diff($obj_a, $obj_b)
+    {
         return $obj_a->pk - $obj_b->pk;
     }
+
+    /** @noinspection PhpUnused */
+    function json(): bool|string
+    {
+        return json_encode([
+            "x" => $this->x_ratio * 100,
+            "y" => $this->y_ratio * 100,
+            "date" => date_format($this->timeVisited, "Y-m-d"),
+            "time" => date_format($this->timeVisited, "H:i:s"),
+            "duration" => $this->duration
+        ]);
+    }
+
+    #[Pure] static function fromJson($json): Location
+    {
+        $loc = new Location();
+        $loc->x = $json["x"];
+        $loc->y = $json["y"];
+        $loc->x_ratio = $loc->x / 100;
+        $loc->y_ratio = $loc->y / 100;
+
+        $loc->timeVisited = date_create_from_format("Y-m-d?H:i:s", $json["date"] . "?" . $json["time"]);
+        $loc->duration = $json["duration"];
+
+        return $loc;
+    }
+
 }

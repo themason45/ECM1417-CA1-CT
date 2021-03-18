@@ -2,19 +2,28 @@
 include_once "support/User.php";
 include_once "support/Location.php";
 include_once "support/Infection.php";
+include_once "support/DistComparator.php";
+$config = include_once "config.php";
 
-$user = \User::getUserById($_SESSION["user_pk"]);
-$locations = Location::queryForUserId($user->pk);
+$user = User::getUserById($_SESSION["user_pk"]);
 
-
-$infection_locations = [];
 $backdate = new DateTime();
 $backdate->modify("-$user->weekWindow week");
-$infections = Infection::queryForUser($user->pk, $backdate, new DateTime());
-foreach ($infections as $infection) {foreach ($infection->locations as $loc)
-{array_push($infection_locations, $loc);}}
+$my_locations = Location::findUserLocationsInTimeRange($user, $backdate, new DateTime());
 
-$locations = array_udiff($locations, $infection_locations, 'Location::diff');
+$infections = Infection::findInTimeRange($backdate, new DateTime());
+$infected_locations =  call_user_func_array("array_merge", array_map("Infection::mapLocs", $infections));
+
+$base_url = $config["API_URL"];
+$ts = 7 * $user->weekWindow;
+$json = json_decode(file_get_contents("$base_url/infections?ts=$ts"));
+foreach ($json as $value) {
+    array_push($infected_locations, Location::fromJson((array) $value));
+}
+
+$contact_locations = array_uintersect($my_locations, $infected_locations,
+    array(new DistComparator($user->distanceOption), "call"));
+
 ?>
 <div style="margin-top: 20px">
     <div class="watermark">
@@ -44,12 +53,12 @@ $locations = array_udiff($locations, $infection_locations, 'Location::diff');
             clickingEnabled = false;
 
             // Normal locations
-            <?php foreach ($locations as $loc): ?>
+            <?php foreach ($infected_locations as $loc): ?>
             addMarker(<?php echo $loc->x_ratio ?>, <?php echo $loc->y_ratio ?>)
             <?php endforeach; ?>
 
             // Infected locations
-            <?php foreach ($infection_locations as $loc): ?>
+            <?php foreach ($contact_locations as $loc): ?>
             addMarker(<?php echo $loc->x_ratio ?>, <?php echo $loc->y_ratio ?>, true)
             <?php endforeach; ?>
         });
