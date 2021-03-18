@@ -100,5 +100,8 @@ switch ($request) {
             $(this).attr("selected", "");
         }
     })
+    window.onresize = function () {
+        window.location.reload();
+    }
 </script>
 </body>
