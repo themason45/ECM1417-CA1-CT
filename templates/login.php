@@ -1,28 +1,34 @@
 <?php
 include_once 'support/db_connector.php';
 include_once 'support/User.php';
+include_once 'support/Csrf.php';
 
-if (isset($_POST['username'], $_POST['password'])) {
-    $conn = getConnection();
+if (isset($_POST['username'], $_POST['password'], $_POST['token'])) {
+    echo $_POST["token"];
+    echo " ";
+    echo $_SESSION["token"];
+    if (Csrf::verifyToken($_POST["token"])) {
+        $conn = getConnection();
 
-    $username = $_POST["username"];
+        $username = $_POST["username"];
 
-    $stmt = $conn->prepare("SELECT `username`, `pk` FROM users WHERE username=:username");
-    $stmt->execute(['username' => $username]);
-    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt = $conn->prepare("SELECT `username`, `pk` FROM users WHERE username=:username");
+        $stmt->execute(['username' => $username]);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
-    $res = $stmt->fetchAll();
-    // If there is 1 user in the list, then we can authenticate
-    $password = $_POST["password"];
-    print_r($res[0]);
-    $user = User::getUserById($res[0]["pk"]);
+        $res = $stmt->fetchAll();
+        // If there is 1 user in the list, then we can authenticate
+        $password = $_POST["password"];
+        print_r($res[0]);
+        $user = User::getUserById($res[0]["pk"]);
 
-    if (count($res) == 1 && $user->checkPassword($password)) {
-        // Set the session value
-        $_SESSION["user_pk"] = $res[0]["pk"];
-        header("Location: /");
+        if (count($res) == 1 && $user->checkPassword($password)) {
+            // Set the session value
+            $_SESSION["user_pk"] = $res[0]["pk"];
+            header("Location: /");
+        }
+        $conn = null;
     }
-    $conn = null;
 }
 ?>
 <div class="watermark">
@@ -31,6 +37,7 @@ if (isset($_POST['username'], $_POST['password'])) {
 <div class="content center-page" style="width: 100%">
     <div style="margin-top: 100px">
         <form action="/login" method="post">
+            <?php echo Csrf::formInput()?>
             <!--suppress HtmlFormInputWithoutLabel -->
             <input type="text" name="username" placeholder="Username">
             <!--suppress HtmlFormInputWithoutLabel -->

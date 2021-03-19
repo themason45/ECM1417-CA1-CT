@@ -5,29 +5,31 @@ include_once "support/Location.php";
 $config = include_once "config.php";
 
 $user = User::getUserById($_SESSION["user_pk"]);
-if (isset($_POST["datetime"])) {
-    $infection = new Infection($user, date_create_from_format("Y-m-d?H:i", $_POST["datetime"]));
-    $infection->save();
+if (isset($_POST["datetime"], $_POST["token"])) {
+    if (Csrf::verifyToken($_POST["token"])) {
+        $infection = new Infection($user, date_create_from_format("Y-m-d?H:i", $_POST["datetime"]));
+        $infection->save();
 
-    $backdate = new DateTime();
-    $backdate->modify("-4 week");
-    $infection->locations = Location::findUserLocationsInTimeRange($user, $backdate, new DateTime());
+        $backdate = new DateTime();
+        $backdate->modify("-4 week");
+        $infection->locations = Location::findUserLocationsInTimeRange($user, $backdate, new DateTime());
 
-    $locations = ((array)$infection)["locations"];
-    $base_url = $config["API_URL"];
-    $report_url = "$base_url/report/";
+        $locations = ((array)$infection)["locations"];
+        $base_url = $config["API_URL"];
+        $report_url = "$base_url/report/";
 
-    foreach ($locations as $location) {
-        $ch = curl_init($report_url);
-        curl_setopt_array($ch,
-            [CURLOPT_POST => 1,
-                CURLOPT_POSTFIELDS => $location->json(),
-                CURLOPT_HTTPHEADER => ["Content-Type:application/json"]]);
+        foreach ($locations as $location) {
+            $ch = curl_init($report_url);
+            curl_setopt_array($ch,
+                [CURLOPT_POST => 1,
+                    CURLOPT_POSTFIELDS => $location->json(),
+                    CURLOPT_HTTPHEADER => ["Content-Type:application/json"]]);
 
-        $result = curl_exec($ch);
-        curl_close($ch);
+            $result = curl_exec($ch);
+            curl_close($ch);
+        }
+        Header("Location: /");
     }
-
 }
 
 ?>
@@ -56,6 +58,7 @@ if (isset($_POST["datetime"])) {
                 <td colspan="3">
                     <div class="content center-page" style="width: 100%">
                         <form action="/report" method="post" style="width: 75%">
+                            <?php echo Csrf::formInput() ?>
                             <table style="width: 100%;">
                                 <tbody>
                                 <tr>
@@ -89,7 +92,8 @@ if (isset($_POST["datetime"])) {
     </div>
 </div>
 <script>
-    $(document).ready(function () {
-        $("#datetime-field").attr("value", moment().format("YYYY-MM-DD\Thh:mm"));
-    });
+    (() => {
+        document.querySelector("#datetime-field")
+            .setAttribute("value", "<?php echo date_format(new DateTime(), "Y-m-d\TH:i") ?>")
+    })();
 </script>

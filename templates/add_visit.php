@@ -65,8 +65,9 @@ if (isset($_POST['datetime'], $_POST['duration'], $_POST["x"], $_POST["y"])) {
     </div>
 </div>
 <script>
-    $(document).ready(function () {
+    (() => {
         clickingEnabled = true;
-        $("#datetime-field").attr("value", moment().format("YYYY-MM-DD\Thh:mm"));
-    });
+        document.querySelector("#datetime-field")
+            .setAttribute("value", "<?php echo date_format(new DateTime(), "Y-m-d\TH:i") ?>")
+    })();
 </script>

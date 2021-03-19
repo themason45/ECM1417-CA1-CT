@@ -1,0 +1,43 @@
+version: '3.6'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8002:8002
+    volumes:
+      - ./src:/var/www/html/
+    environment:
+      DB_PORT: 3307
+      DB_ADDRESS: mysql:host=mysql:3307;dbname=public
+
+  mysql:
+    image: mysql/mysql-server
+    platform: linux/amd64
+    restart: always
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_HOST: localhost
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: public
+      MYSQL_USER: phpbot
+      MYSQL_PASSWORD: pwd
+
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - app_db:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+volumes:
+  app_db:
+
+networks:
+  nt_mysql:
+    driver: bridge

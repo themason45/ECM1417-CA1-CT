@@ -6,16 +6,20 @@ session_start();
     <link href="/static/style.css" type="text/css" rel="stylesheet">
 </head>
 <body style="margin: 0; #overflow: hidden">
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://momentjs.com/downloads/moment.min.js"></script>
 <div style="margin-bottom: 1vh">
     <?php include 'templates/sections/header.html' ?>
 </div>
 <?php
+include "support/Csrf.php";
+// Generate the CSRF token, to verify any post requests.
+if (empty($_SESSION['token'])) {
+    $_SESSION['token'] = Csrf::generateToken();
+}
+$token = $_SESSION['token'];
+
 
 // We want to check if the user is authenticated here, if they are, then display the tabular view, if they are
 // not, then display the login/register view
-
 $request = $_SERVER['REQUEST_URI'];
 if (!(isset($_SESSION["user_pk"]))) {
     // Check if the current user is logged in
@@ -92,12 +96,12 @@ switch ($request) {
 <?php endif; ?>
 <script>
     let path = window.location.pathname
-    let lists = $('li.sidebar-li')
-    lists.each(function () {
-        let a = $(this).find("a")
-        let href = $(a).attr("href")
+    let lists = document.querySelectorAll('li.sidebar-li')
+    lists.forEach(function (el) {
+        let a = el.getElementsByTagName("a")[0]
+        let href = a.getAttribute("href")
         if (href === path) {
-            $(this).attr("selected", "");
+            el.setAttribute("selected", "");
         }
     })
     window.onresize = function () {

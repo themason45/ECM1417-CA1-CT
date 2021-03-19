@@ -49,7 +49,7 @@ $contact_locations = array_uintersect($my_locations, $infected_locations,
         </table>
     </div>
     <script>
-        $(document).ready(function () {
+        (() =>{
             clickingEnabled = false;
             // Normal locations
             <?php foreach ($infected_locations as $loc): ?>
@@ -62,6 +62,6 @@ $contact_locations = array_uintersect($my_locations, $infected_locations,
             addMarker(<?php echo $loc->x_ratio ?>, <?php echo $loc->y_ratio ?>, "<?php echo "Visited at: ".
                 date_format($loc->timeVisited, "Y-m-d H:i:s")?>", true)
             <?php endforeach; ?>
-        });
+        })();
     </script>
 </div>

@@ -12,55 +12,57 @@
     </div>
 </div>
 
-<script src="https://unpkg.com/@popperjs/core@2"></script>
-<script src="https://unpkg.com/tippy.js@6"></script>
 <script>
     let clickingEnabled;
-    $(document).ready(function () {
-        let map = $("#map")
-        $("#map_width").val(map.width());
-        $("#map_height").val(map.height());
+    let map = document.querySelector("#map");
 
-        map.click(function (ev) {
+    (() => {
+        let wrapper = document.querySelector("#pointer-wrapper");
+
+        document.querySelector("#map_width").setAttribute("value", map.offsetWidth);
+        document.querySelector("#map_height").setAttribute("value", map.offsetHeight);
+
+        map.addEventListener("click", function (ev) {
             if (clickingEnabled) {
+                let offsets = calculateOffsets();
+                let x = ev.clientX - offsets.left;
+                let y = ev.clientY - offsets.top;
 
-                let offset = $(this).offset()
-                let x = ev.clientX - offset.left;
-                let y = ev.clientY - offset.top;
-                $("#x_input").val(x);
-                $("#y_input").val(y);
+                document.querySelector("#x_input").setAttribute("value", x.toString());
+                document.querySelector("#y_input").setAttribute("value", y.toString());
 
-
-                // TODO: Make the point position responsive to changes in screen size
-                let wrapper = $("#pointer-wrapper")
+                let wrapper = document.querySelector("#pointer-wrapper");
                 // The -15, and -30, is to account for the size of the marker itself
-                wrapper.css("left", `${Math.round(x - 15)}px`);
-                wrapper.css("top", `${Math.round(y - 30)}px`);
-                wrapper.show();
+                wrapper.setAttribute("style",
+                    `z-index: 1; position: absolute; left: ${Math.round(x - 15)}px; top: ${Math.round(y - 30)}px`)
+                wrapper.removeAttribute("hidden");
             } else {
-                $("#marker-info").text("Click on the marker to see details about an infection.");
+                document.querySelector("#marker-info").textContent =
+                    "Click on the marker to see details about an infection.";
             }
-        });
-    });
+        })
+    })();
 
     function addMarker(x_ratio, y_ratio, text="", red=false) {
-        let wrapper = $("#pointer-wrapper").clone();
-        wrapper.appendTo("#mapWrapper");
-        wrapper.data("tooltip", text);
+        let wrapper = document.querySelector("#pointer-wrapper").cloneNode(true);
+        map.parentElement.appendChild(wrapper);
+        wrapper.dataset.tooltip = text;
 
-        if (red) {wrapper.find("img").attr('src',"/static/img/marker_red.png");}
+        if (red) {wrapper.getElementsByTagName("img")[0].setAttribute('src',"/static/img/marker_red.png");}
+        let x = x_ratio * map.offsetWidth; let y = y_ratio * map.offsetHeight;
 
-        let map = $("#map")
-        let x = x_ratio * map.width(); let y = y_ratio * map.height();
-
-        wrapper.css("left", `${Math.round(x - 15)}px`);
-        wrapper.css("top", `${Math.round(y - 30)}px`);
-        wrapper.show();
+        wrapper.setAttribute("style",
+            `z-index: 1; position: absolute; left: ${Math.round(x - 15)}px; top: ${Math.round(y - 30)}px`)
+        wrapper.removeAttribute("hidden");
     }
 
     function markerPress(pointerObj) {
-        let pointer = $(pointerObj);
-        let text = pointer.data("tooltip");
-        $("#marker-info").text(text);
+        document.querySelector("#marker-info").textContent = pointerObj.dataset.tooltip;
+    }
+
+    function calculateOffsets() {
+        let bodyRect = document.body.getBoundingClientRect(), mapRect = map.getBoundingClientRect();
+        let offsetLeft = mapRect.left - bodyRect.left, offsetTop = mapRect.top - bodyRect.top;
+        return {left: offsetLeft, top: offsetTop};
     }
 </script>

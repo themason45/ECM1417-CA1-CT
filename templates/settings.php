@@ -1,12 +1,14 @@
 <?php
     include_once "support/User.php";
     $user = User::getUserById($_SESSION["user_pk"]);
-    if (isset($_POST["distance"], $_POST["window"])) {
-        $user->distanceOption = $_POST["distance"];
-        $user->weekWindow = $_POST["window"];
+    if (isset($_POST["distance"], $_POST["window"], $_POST["token"])) {
+        if (Csrf::verifyToken($_POST["token"])) {
+            $user->distanceOption = $_POST["distance"];
+            $user->weekWindow = $_POST["window"];
 
-        $user->update();
-        Header("Location: /");
+            $user->update();
+            Header("Location: /");
+        }
     }
 ?>
 <div style="margin-top: 20px">
@@ -33,6 +35,7 @@
                 <td colspan="3">
                     <div class="content center-page" style="width: 100%">
                         <form action="/settings" method="post" style="width: 75%">
+                            <?php echo Csrf::formInput()?>
                             <table style="width: 100%;">
                                 <tbody>
                                 <tr>
@@ -79,8 +82,8 @@
 </div>
 <script>
     function goHome() {window.location.href = '/'}
-    $(document).ready(function () {
+    (() => {
         let option = parseInt(<?php echo $user->weekWindow ?>);
-        $(`#window_input > option[value=${option}]`).prop("selected", true)
-    })
+        document.querySelector(`#window_input`).options[option - 1].setAttribute("selected", "true");
+    })();
 </script>
