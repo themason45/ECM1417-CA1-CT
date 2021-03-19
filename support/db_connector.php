@@ -2,9 +2,8 @@
 
 function getConnection(): PDO
 {
-    $config = include "config.php";
-    $port = $config["DB_PORT"];
-    if (isset($config["DB_ADDRESS"])) {
+    $port = $_ENV["DB_PORT"];
+    if (getenv("DB_ADDRESS")) {
         $conn = new PDO(getenv("DB_ADDRESS"), 'phpbot', "pwd");
     } else {
         $conn = new PDO('mysql:host=localhost:' . $port . ';dbname=public',

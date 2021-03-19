@@ -14,11 +14,9 @@
 
 <script>
     let clickingEnabled;
-    let map = document.querySelector("#map");
 
     (() => {
-        let wrapper = document.querySelector("#pointer-wrapper");
-
+        let map = document.querySelector("#map");
         document.querySelector("#map_width").setAttribute("value", map.offsetWidth);
         document.querySelector("#map_height").setAttribute("value", map.offsetHeight);
 
@@ -44,15 +42,19 @@
     })();
 
     function addMarker(x_ratio, y_ratio, text="", red=false) {
+        let map = document.querySelector("#map");
+
         let wrapper = document.querySelector("#pointer-wrapper").cloneNode(true);
         map.parentElement.appendChild(wrapper);
         wrapper.dataset.tooltip = text;
 
         if (red) {wrapper.getElementsByTagName("img")[0].setAttribute('src',"/static/img/marker_red.png");}
-        let x = x_ratio * map.offsetWidth; let y = y_ratio * map.offsetHeight;
+        let mapRect = map.getBoundingClientRect();
+        let x = x_ratio * mapRect.width; let y = y_ratio * mapRect.width;
 
         wrapper.setAttribute("style",
             `z-index: 1; position: absolute; left: ${Math.round(x - 15)}px; top: ${Math.round(y - 30)}px`)
+        console.log(wrapper);
         wrapper.removeAttribute("hidden");
     }
 

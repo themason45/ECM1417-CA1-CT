@@ -4,4 +4,4 @@ WORKDIR /usr/src/covid_tracker
 
 RUN docker-php-ext-install pdo pdo_mysql
 
-CMD [ "php", "./index.php" ]
+CMD [ "php" ]

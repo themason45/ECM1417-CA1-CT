@@ -37,7 +37,3 @@ services:
       - 8080:8080
 volumes:
   app_db:
-
-networks:
-  nt_mysql:
-    driver: bridge

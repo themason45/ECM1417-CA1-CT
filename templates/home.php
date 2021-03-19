@@ -3,7 +3,6 @@ include_once "support/User.php";
 include_once "support/Location.php";
 include_once "support/Infection.php";
 include_once "support/DistComparator.php";
-$config = include_once "config.php";
 
 $user = User::getUserById($_SESSION["user_pk"]);
 
@@ -14,7 +13,7 @@ $my_locations = Location::findUserLocationsInTimeRange($user, $backdate, new Dat
 $infections = Infection::findInTimeRange($backdate, new DateTime());
 $infected_locations =  call_user_func_array("array_merge", array_map("Infection::mapLocs", $infections));
 
-$base_url = $config["API_URL"];
+$base_url = $_ENV["API_URL"];
 $ts = 7 * $user->weekWindow;
 $json = json_decode(file_get_contents("$base_url/infections?ts=$ts"));
 foreach ($json as $value) {
@@ -23,7 +22,6 @@ foreach ($json as $value) {
 
 $contact_locations = array_uintersect($my_locations, $infected_locations,
     array(new DistComparator($user->distanceOption), "call"));
-
 ?>
 <div style="margin-top: 20px">
     <div class="watermark">
@@ -49,7 +47,7 @@ $contact_locations = array_uintersect($my_locations, $infected_locations,
         </table>
     </div>
     <script>
-        (() =>{
+        document.addEventListener('DOMContentLoaded', () => {
             clickingEnabled = false;
             // Normal locations
             <?php foreach ($infected_locations as $loc): ?>
@@ -62,6 +60,6 @@ $contact_locations = array_uintersect($my_locations, $infected_locations,
             addMarker(<?php echo $loc->x_ratio ?>, <?php echo $loc->y_ratio ?>, "<?php echo "Visited at: ".
                 date_format($loc->timeVisited, "Y-m-d H:i:s")?>", true)
             <?php endforeach; ?>
-        })();
+        })
     </script>
 </div>
