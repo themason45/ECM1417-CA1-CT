@@ -25,6 +25,7 @@ if (isset($_POST['username'], $_POST['password'], $_POST['token'])) {
             echo "Success";
             header("Location: /");
         }
+        echo "Not a success";
         $conn = null;
     }
 }
