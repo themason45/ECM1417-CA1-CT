@@ -52,7 +52,6 @@ class User
             /** @noinspection SqlResolve */
             $stmt = $conn->prepare("INSERT INTO users (username, `password`, firstName, lastName, distance, `window`)
 VALUES (:username, :password, :firstName, :lastName, :distance, :window);");
-            echo $stmt->queryString;
 
             $stmt->execute(["username" => $this->username, "password" => $this->password,
                 "firstName" => $this->firstName, "lastName" => $this->lastName, "distance" => $this->distanceOption,
