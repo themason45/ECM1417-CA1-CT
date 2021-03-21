@@ -1,5 +1,6 @@
 <?php
 session_start();
+echo "Session started";
 require_once "config.php";
 ?>
 <head>
