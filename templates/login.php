@@ -4,9 +4,6 @@ include_once 'support/User.php';
 include_once 'support/Csrf.php';
 
 if (isset($_POST['username'], $_POST['password'], $_POST['token'])) {
-    echo $_POST["token"];
-    echo " ";
-    echo $_SESSION["token"];
     if (Csrf::verifyToken($_POST["token"])) {
         $conn = getConnection();
 
@@ -25,6 +22,7 @@ if (isset($_POST['username'], $_POST['password'], $_POST['token'])) {
         if (count($res) == 1 && $user->checkPassword($password)) {
             // Set the session value
             $_SESSION["user_pk"] = $res[0]["pk"];
+            echo "Success";
             header("Location: /");
         }
         $conn = null;

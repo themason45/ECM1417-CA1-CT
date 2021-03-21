@@ -6,7 +6,7 @@ require_once "config.php";
     <title>Contact tracer</title>
     <link href="/static/style.css" type="text/css" rel="stylesheet">
 </head>
-<body style="margin: 0; #overflow: hidden">
+<body style="margin: 0; overflow: hidden">
 <div style="margin-bottom: 1vh">
     <?php include 'templates/sections/header.html' ?>
 </div>
@@ -17,7 +17,6 @@ if (empty($_SESSION['token'])) {
     $_SESSION['token'] = Csrf::generateToken();
 }
 $token = $_SESSION['token'];
-
 
 // We want to check if the user is authenticated here, if they are, then display the tabular view, if they are
 // not, then display the login/register view
