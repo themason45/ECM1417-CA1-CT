@@ -16,13 +16,16 @@ if (isset($_POST['username'], $_POST['password'], $_POST['token'])) {
         $res = $stmt->fetchAll();
         // If there is 1 user in the list, then we can authenticate
         $password = $_POST["password"];
-        print_r($res[0]);
-        $user = User::getUserById($res[0]["pk"]);
+        if (count($res) == 1) {
+            $user = User::getUserById($res[0]["pk"]);
 
-        if (count($res) == 1 && $user->checkPassword($password)) {
-            // Set the session value
-            $_SESSION["user_pk"] = $res[0]["pk"];
-            header("Location: /");
+            if ($user->checkPassword($password)) {
+                // Set the session value
+                $_SESSION["user_pk"] = $res[0]["pk"];
+                header("Location: /");
+            }
+        } else {
+            echo "Invalid username, or password";
         }
         $conn = null;
     }
@@ -35,7 +38,7 @@ if (isset($_POST['username'], $_POST['password'], $_POST['token'])) {
     <div style="margin-top: 100px">
         <!--suppress HtmlUnknownTarget -->
         <form action="/login" method="post">
-            <?php echo Csrf::formInput()?>
+            <?php echo Csrf::formInput() ?>
             <!--suppress HtmlFormInputWithoutLabel -->
             <input type="text" name="username" placeholder="Username">
             <!--suppress HtmlFormInputWithoutLabel -->
@@ -44,11 +47,13 @@ if (isset($_POST['username'], $_POST['password'], $_POST['token'])) {
             <table style="width: 100%">
                 <tr>
                     <td style="padding-left: 0"><input type="submit" value="Login" class="btn"></td>
-                    <td style="padding-right: 0"><button class="btn" type="button">Cancel</button></td>
+                    <td style="padding-right: 0">
+                        <button class="btn" type="button">Cancel</button>
+                    </td>
                 </tr>
             </table>
             <input class="btn" type="button" style="margin-top: 10px" onclick="window.location.href='/register'"
-            value="Register">
+                   value="Register">
         </form>
     </div>
 </div>
