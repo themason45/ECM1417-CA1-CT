@@ -4,9 +4,6 @@ include_once 'support/User.php';
 include_once 'support/Csrf.php';
 
 if (isset($_POST['username'], $_POST['password'], $_POST['token'])) {
-    echo $_POST["token"];
-    echo " ";
-    echo $_SESSION["token"];
     if (Csrf::verifyToken($_POST["token"])) {
         $conn = getConnection();
 
