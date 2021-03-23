@@ -47,8 +47,4 @@ class Infection
         return $obj->locations;
     }
 
-    public function serialise(): bool|string
-    {
-        return json_encode($this);
-    }
 }

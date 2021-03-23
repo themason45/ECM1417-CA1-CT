@@ -6,9 +6,10 @@
 <input id="map_width" type="hidden" name="map_width" value="0" required>
 <input id="map_height" type="hidden" name="map_height" value="0" required>
 <div style=" float: right; padding-right: 0; position: relative; width: 85%" id="mapWrapper">
-    <img src="/static/img/exeter.jpg" id="map" style="float: right; width: 100%; z-index: 0; display: block;">
+    <img src="/static/img/exeter.jpg" id="map" style="float: right; width: 100%; z-index: 0; display: block;"
+    alt="map">
     <div id="pointer-wrapper" style="z-index: 1; position: absolute;" data-tooltip="" onclick="markerPress(this)" hidden>
-        <img src="/static/img/marker_black.png" style="width: 30px;">
+        <img src="/static/img/marker_black.png" style="width: 30px;" alt="marker">
     </div>
 </div>
 
@@ -63,6 +64,7 @@
     }
 
     function calculateOffsets() {
+        let map = document.querySelector("#map");
         let bodyRect = document.body.getBoundingClientRect(), mapRect = map.getBoundingClientRect();
         let offsetLeft = mapRect.left - bodyRect.left, offsetTop = mapRect.top - bodyRect.top;
         return {left: offsetLeft, top: offsetTop};

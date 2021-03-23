@@ -5,7 +5,7 @@ use JetBrains\PhpStorm\Pure;
 
 class DistComparator
 {
-    private float $distance = 0.0;
+    private float $distance;
 
     function __construct( $distance ) {
         $this->distance = $distance;

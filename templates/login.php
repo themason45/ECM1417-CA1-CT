@@ -36,6 +36,7 @@ if (isset($_POST['username'], $_POST['password'], $_POST['token'])) {
 </div>
 <div class="content center-page" style="width: 100%">
     <div style="margin-top: 100px">
+        <!--suppress HtmlUnknownTarget -->
         <form action="/login" method="post">
             <?php echo Csrf::formInput()?>
             <!--suppress HtmlFormInputWithoutLabel -->

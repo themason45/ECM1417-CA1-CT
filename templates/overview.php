@@ -38,13 +38,15 @@ font-family: Arial,serif; font-size: 20px" >
 </div>
 <script>
     function removeLocation(pk) {
-        $.ajax(
-            `/api/location/${pk}/delete`,
-            {
-                success: function () {
-                    location.reload();
-                }
+        let xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                location.reload();
             }
-        );
+        };
+
+        xhttp.open("POST", `/api/location/${pk}/delete/`, true);
+        xhttp.send();
     }
 </script>

@@ -12,7 +12,8 @@
                    <td colspan="2"><h2>Are you sure you want to logout?</h2></td>
                 </tr>
                 <tr>
-                    <td style="padding-left: 0"><a class="btn" href="/logout_confirm">Logout</a></td>
+                    <td style="padding-left: 0"><!--suppress HtmlUnknownTarget -->
+                        <a class="btn" href="/logout_confirm">Logout</a></td>
                     <td style="padding-right: 0">
                         <a class="btn" href="/">Cancel</a>
                     </td>

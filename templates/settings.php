@@ -34,6 +34,7 @@
             <tr style="height: 35%">
                 <td colspan="3">
                     <div class="content center-page" style="width: 100%">
+                        <!--suppress HtmlUnknownTarget -->
                         <form action="/settings" method="post" style="width: 75%">
                             <?php echo Csrf::formInput()?>
                             <table style="width: 100%;">

@@ -29,7 +29,7 @@ if (isset($_POST['datetime'], $_POST['duration'], $_POST["x"], $_POST["y"])) {
         <img src="/static/img/watermark.png" alt="watermark" style="margin-left: 15%">
     </div>
     <div class="content">
-        <!--suppress HtmlDeprecatedAttribute -->
+        <!--suppress HtmlDeprecatedAttribute, HtmlUnknownTarget -->
         <form action="/add_visit" method="post">
             <!--suppress HtmlDeprecatedAttribute -->
             <table style="table-layout: fixed;width: 100%; padding-left: 50px; padding-right: 50px" cellpadding="0"
@@ -46,7 +46,7 @@ if (isset($_POST['datetime'], $_POST['duration'], $_POST["x"], $_POST["y"])) {
                                 <label for="datetime-field">Date/Time</label><input id="datetime-field" name="datetime"
                                                                                     type="datetime-local" value=""></li>
                             <li class="form-li">
-                                <label for="duration-field">Duration (mins)</label><input id="duration-field"
+                                <label for="duration-field">Duration (Minutes)</label><input id="duration-field"
                                                                                           name="duration"
                                                                                           type="number" value="1"
                                 min="1"></li>

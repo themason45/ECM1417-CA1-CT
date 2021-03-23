@@ -10,6 +10,7 @@ class Csrf
         try {
             return bin2hex(random_bytes(32));
         } catch (Exception $e) {
+            echo $e;
         }
         return "";
     }

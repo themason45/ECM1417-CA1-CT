@@ -8,7 +8,7 @@ class User
     public string $firstName = '';
     public string $lastName = '';
     public string $username = '';
-    private string $password = '';
+    private string $password;
 
     public int $weekWindow = 0;
     public float $distanceOption = 0.0;
@@ -89,7 +89,8 @@ VALUES (:username, :password, :firstName, :lastName, :distance, :window);");
         }
     }
 
-    function checkPassword($pwd) {
+    function checkPassword($pwd): bool
+    {
         return password_verify($pwd , $this->password);
     }
 }

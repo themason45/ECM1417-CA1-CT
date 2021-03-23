@@ -17,6 +17,7 @@ if (isset($_POST['username'], $_POST['password'], $_POST['name'], $_POST['surnam
 </div>
 <div class="content center-page" style="width: 100%">
     <div style="margin-top: 100px; width: 50%" >
+        <!--suppress HtmlUnknownTarget -->
         <form action="/register" method="post">
             <?php echo Csrf::formInput() ?>
             <!--suppress HtmlFormInputWithoutLabel -->
