@@ -1,10 +1,11 @@
 <?php
 session_start();
 require_once "config.php";
+$pageTitle = ""
 ?>
 <head>
-    <title>Contact tracer</title>
     <link href="/static/style.css" type="text/css" rel="stylesheet">
+    <title>COVID-CT: <?php echo $pageTitle ?></title>
 </head>
 <body style="margin: 0; overflow: hidden">
 <div style="margin-bottom: 1vh">
@@ -28,6 +29,7 @@ if (!(isset($_SESSION["user_pk"]))) {
     }
 }
 
+
 $not_login = true;
 switch ($request) {
     case '/login' :
@@ -35,12 +37,14 @@ switch ($request) {
             Header("Location: /");
         }
         $not_login = false;
+        $pageTitle = "Login";
         require __DIR__ . '/templates/login.php';
         break;
     case '/register':
         if (isset($_SESSION["user_pk"])) {
             Header("Location: /");
         }
+        $pageTitle = "Registration";
         $not_login = false;
         require __DIR__ . '/templates/register.php';
         break;
@@ -62,21 +66,27 @@ switch ($request) {
                     switch ($request) {
                         case '':
                         case '/' :
+                            $pageTitle = "Home Page";
                             require __DIR__ . '/templates/home.php';
                             break;
                         case '/overview':
+                            $pageTitle = "Visits Overview";
                             require __DIR__ . '/templates/overview.php';
                             break;
                         case '/add_visit':
+                            $pageTitle = "Visits Overview";
                             require __DIR__ . '/templates/add_visit.php';
                             break;
                         case '/report':
+                            $pageTitle = "Visits Overview";
                             require __DIR__ . '/templates/report.php';
                             break;
                         case '/settings':
+                            $pageTitle = "Settings";
                             require __DIR__ . '/templates/settings.php';
                             break;
                         case '/logout':
+                            $pageTitle = "Logout";
                             require __DIR__ . '/templates/logout.php';
                             break;
                         case '/logout_confirm':
@@ -107,5 +117,6 @@ switch ($request) {
     window.onresize = function () {
         window.location.reload();
     }
+    document.title = `COVID-CT: <?php echo $pageTitle ?>`
 </script>
 </body>
